@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,9 +20,15 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private SubscriptionType subscriptionType;
 
-    public Subscription(Long memberId, SubscriptionType subscriptionType) {
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    public Subscription(Long memberId, SubscriptionType subscriptionType, LocalDate startDate) {
         this.memberId = memberId;
         this.subscriptionType = subscriptionType;
+        this.startDate = startDate;
+        this.endDate = startDate.plusMonths(1);
     }
 
     // paymentId
