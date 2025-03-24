@@ -22,8 +22,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public List<SubscriptionResponse> getSubscriptionsByMemberId(Long memberId) {
+    public List<SubscriptionResponse> getAllSubscriptionsByMemberId(Long memberId) {
         return List.of();
+    }
+
+    @Override
+    public SubscriptionResponse getActiveSubscriptionByMemberId(Long memberId) {
+        return null;
     }
 
     @Override
@@ -31,6 +36,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Subscription subscription = subscriptionRepository.save(
                 subscriptionMapper.saveRequestToSubscription(saveSubscriptionRequest)
         );
+
+    }
+
+    @Override
+    public void hasActiveSubscription(Long memberId) {
+
+    }
+
+    @Override
+    public void unSubscribeSubscription(Long memberId) {
 
     }
 }

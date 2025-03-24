@@ -7,7 +7,13 @@ import com.example.subscriptionserver.domain.subscription.dto.response.Subscript
 import java.util.List;
 
 public interface SubscriptionService {
-    List<SubscriptionResponse> getSubscriptionsByMemberId(Long memberId);
+    List<SubscriptionResponse> getAllSubscriptionsByMemberId(Long memberId);
+
+    SubscriptionResponse getActiveSubscriptionByMemberId(Long memberId);
 
     void registerSubscription(SaveSubscriptionRequest saveSubscriptionRequest);
+
+    void hasActiveSubscription(Long memberId);
+
+    void unSubscribeSubscription(Long memberId);
 }
