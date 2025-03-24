@@ -12,3 +12,9 @@ spring:
     show-sql: true
     database: postgresql
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5434/KT_SUBSCRIPTION
+    username: postgres
+    password: root!
+
