@@ -22,4 +22,6 @@ public class Subscription {
         this.memberId = memberId;
         this.subscriptionType = subscriptionType;
     }
+
+    // paymentId
 }
