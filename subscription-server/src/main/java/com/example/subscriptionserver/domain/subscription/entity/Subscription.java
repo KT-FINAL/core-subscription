@@ -1,9 +1,6 @@
 package com.example.subscriptionserver.domain.subscription.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +14,14 @@ public class Subscription {
     private Long id;
 
     private Long memberId;
+
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType subscriptionType;
+
+    public Subscription(Long memberId, SubscriptionType subscriptionType) {
+        this.memberId = memberId;
+        this.subscriptionType = subscriptionType;
+    }
+
+    // paymentId
 }

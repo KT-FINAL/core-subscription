@@ -1,15 +1,11 @@
 package com.example.subscriptionserver.domain.subscription.entity;
 
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+public enum SubscriptionType {
+    BASIC(9900), PREMIUM(15900);
 
-@Getter
-@Setter
-@Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SubscriptionType {
+    private Integer fee;
 
+    SubscriptionType(Integer fee){
+        this.fee = fee;
+    }
 }
