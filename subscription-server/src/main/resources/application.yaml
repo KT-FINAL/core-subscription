@@ -1,1 +1,14 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: SUBSCRIPTION-SERVICE
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
+    database: postgresql
 
