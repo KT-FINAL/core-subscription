@@ -20,6 +20,9 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private SubscriptionType subscriptionType;
 
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus subscriptionStatus;
+
     private LocalDate startDate;
 
     private LocalDate endDate;
@@ -27,9 +30,12 @@ public class Subscription {
     public Subscription(Long memberId, SubscriptionType subscriptionType, LocalDate startDate) {
         this.memberId = memberId;
         this.subscriptionType = subscriptionType;
+        this.subscriptionStatus = SubscriptionStatus.PENDING;
         this.startDate = startDate;
         this.endDate = startDate.plusMonths(1);
     }
 
-    // paymentId
+    public void updateSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+    }
 }
