@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResponse {
+public class PaymentEntityResponse {
+    private Long id;
+    private Long memberId;
     private String lastTransactionKey;
     private String paymentKey;
     private String orderId;

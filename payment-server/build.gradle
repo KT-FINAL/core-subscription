@@ -35,6 +35,8 @@ dependencies {
 	// webclient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// Jackson Java Time Module (for OffsetDateTime, LocalDateTime, etc.)
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

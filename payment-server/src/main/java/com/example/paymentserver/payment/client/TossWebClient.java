@@ -3,9 +3,16 @@ package com.example.paymentserver.payment.client;
 import com.example.paymentserver.payment.dto.request.AutoPayRequest;
 import com.example.paymentserver.payment.dto.request.BillingKeyRequest;
 import com.example.paymentserver.payment.dto.response.BillingKeyResponse;
+import com.example.paymentserver.payment.dto.response.PaymentResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -22,10 +29,22 @@ public class TossWebClient {
                          @Value("${toss.secret-key}") String secret) {
         String endcodedKey = makeAuthorizationKey(secret);
 
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> {
+                    configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+                    configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
+                })
+                .build();
+
         this.webClient = webClient
                 .baseUrl("https://api.tosspayments.com/v1/billing")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .defaultHeader(HttpHeaders.AUTHORIZATION, endcodedKey)
+                .exchangeStrategies(exchangeStrategies)
                 .build();
     }
 
@@ -45,9 +64,9 @@ public class TossWebClient {
                 .bodyToMono(BillingKeyResponse.class);
     }
 
-    //
-    public void paySubscription(String billingKey, AutoPayRequest autoPayRequest) {
-        webClient.post()
+    // paySubscription
+    public Mono<PaymentResponse> paySubscription(String billingKey, AutoPayRequest autoPayRequest) {
+        return webClient.post()
                 .uri(
                         uriBuilder -> uriBuilder
                                 .path("/{billingKey}")
@@ -55,6 +74,6 @@ public class TossWebClient {
                 )
                 .bodyValue(autoPayRequest)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(PaymentResponse.class);
     }
 }
