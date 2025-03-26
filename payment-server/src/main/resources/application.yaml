@@ -2,6 +2,7 @@ server:
   port: 8082
 
 spring:
+
   config:
     import: optional:file:.env[.properties]
 
@@ -9,15 +10,10 @@ spring:
     name: PAYMENT-SERVICE
 
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: 127.0.0.1:9092
     consumer:
       group-id: payment-group
       auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   jpa:
     hibernate:
@@ -31,7 +27,6 @@ spring:
     url: jdbc:postgresql://localhost:5435/KT_PAYMENT
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-
 
 
 toss:

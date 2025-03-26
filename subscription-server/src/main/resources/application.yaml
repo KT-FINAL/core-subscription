@@ -18,3 +18,12 @@ spring:
     username: postgres
     password: root!
 
+  kafka:
+    bootstrap-servers: kafka:9092  # 또는 kafka:9092 (도커 내부에서는 kafka:9092일 수도 있음)
+    consumer:
+      group-id: subscription-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+    listener:
+      ack-mode: record
