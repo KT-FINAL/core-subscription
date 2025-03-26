@@ -2,8 +2,22 @@ server:
   port: 8082
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   application:
-    name: SUBSCRIPTION-SERVICE
+    name: PAYMENT-SERVICE
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: payment-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   jpa:
     hibernate:
@@ -15,5 +29,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5435/KT_PAYMENT
-    username: postgres
-    password: root!
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+
+
+toss:
+  client-key: ${PAYMENT_CLIENT_KEY}
+  secret-key: ${PAYMENT_SECRET_KEY}
