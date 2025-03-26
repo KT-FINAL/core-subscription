@@ -20,6 +20,9 @@ kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 \
   --replication-factor 1 --partitions 3 --topic payment-completed
 
 kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 \
+  --replication-factor 1 --partitions 3 --topic subscription-failed
+
+kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 \
   --replication-factor 1 --partitions 3 --topic member-notification-topic
 
 echo "[INIT] Topic creation complete."

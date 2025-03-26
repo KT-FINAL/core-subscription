@@ -98,4 +98,17 @@ public class PaymentService {
     public void refundPayment(RefundPaymentRequest request) {
         tossWebClient.refundPayment(request.getPaymentKey(), new TossRefundRequest("[밀리의 서재 +] 환불"));
     }
+
+    @Transactional
+    public void refundPaymentByPaymentId(Long paymentId) {
+        Payment payment = getPaymentById(paymentId);
+
+        System.out.println("[밀리의 서재 +] 환불");
+
+        tossWebClient.refundPayment(payment.getPaymentKey(),new TossRefundRequest("[밀리의 서재 +] 환불"));
+    }
+
+    private Payment getPaymentById(Long paymentId) {
+        return paymentRepository.findById(paymentId).orElseThrow(EntityNotFoundException::new);
+    }
 }
