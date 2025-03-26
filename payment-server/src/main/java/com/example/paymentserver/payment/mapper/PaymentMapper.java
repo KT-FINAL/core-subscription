@@ -61,8 +61,17 @@ public class PaymentMapper {
     }
 
     public PaymentEntityResponse toPaymentEntityResponse(Payment payment) {
-        return new PaymentEntityResponse(
-
+        return new PaymentEntityResponse (
+                payment.getId(),
+                payment.getMemberId(),
+                payment.getLastTransactionKey(),
+                payment.getPaymentKey(),
+                payment.getOrderId(),
+                payment.getOrderName(),
+                payment.getStatus(),
+                payment.getRequestedAt(),
+                payment.getApprovedAt(),
+                payment.getTotalAmount()
         );
     }
 }
