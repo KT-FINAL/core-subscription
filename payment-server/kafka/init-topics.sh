@@ -21,12 +21,12 @@ echo "[INIT] Kafka is ready. Creating topics..."
 
 # 토픽 생성
 /usr/bin/kafka-topics --create --if-not-exists --bootstrap-server $BOOTSTRAP_SERVER \
-  --replication-factor 1 --partitions 3 --topic payment-completed
+  --replication-factor 1 --partitions 1 --topic payment-completed
 
 /usr/bin/kafka-topics --create --if-not-exists --bootstrap-server $BOOTSTRAP_SERVER \
-  --replication-factor 1 --partitions 3 --topic subscription-failed
+  --replication-factor 1 --partitions 1 --topic subscription-failed
 
 /usr/bin/kafka-topics --create --if-not-exists --bootstrap-server $BOOTSTRAP_SERVER \
-  --replication-factor 1 --partitions 3 --topic member-notification-topic
+  --replication-factor 1 --partitions 1 --topic member-notification-topic
 
 echo "[INIT] Topic creation complete."
