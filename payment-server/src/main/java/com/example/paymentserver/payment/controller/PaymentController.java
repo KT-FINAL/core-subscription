@@ -6,10 +6,7 @@ import com.example.paymentserver.payment.dto.response.BillingResponse;
 import com.example.paymentserver.payment.dto.response.PaymentEntityResponse;
 import com.example.paymentserver.payment.service.PaymentService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payments")
@@ -28,5 +25,10 @@ public class PaymentController {
     @PostMapping
     public ResponseEntity<PaymentEntityResponse> savePayment(@RequestBody SavePaymentRequest request) {
         return ResponseEntity.ok(paymentService.savePayment(request));
+    }
+
+    @PostMapping("/refund")
+    public void refundPayment() {
+
     }
 }

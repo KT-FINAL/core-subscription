@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillingKeyResponse {
+public class TossBillingKeyResponse {
     private String mId;
     private String customerKey;
     private String authenticatedAt;

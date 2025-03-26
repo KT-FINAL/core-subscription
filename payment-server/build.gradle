@@ -37,6 +37,9 @@ dependencies {
 
 	// Jackson Java Time Module (for OffsetDateTime, LocalDateTime, etc.)
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	// Kafka Client
+	implementation '"org.springframework.kafka:spring-kafka"'
 }
 
 tasks.named('test') {

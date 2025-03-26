@@ -1,9 +1,10 @@
 package com.example.paymentserver.payment.client;
 
-import com.example.paymentserver.payment.dto.request.AutoPayRequest;
-import com.example.paymentserver.payment.dto.request.BillingKeyRequest;
-import com.example.paymentserver.payment.dto.response.BillingKeyResponse;
-import com.example.paymentserver.payment.dto.response.PaymentResponse;
+import com.example.paymentserver.payment.dto.request.TossAutoPayRequest;
+import com.example.paymentserver.payment.dto.request.TossBillingKeyRequest;
+import com.example.paymentserver.payment.dto.request.TossRefundRequest;
+import com.example.paymentserver.payment.dto.response.TossBillingKeyResponse;
+import com.example.paymentserver.payment.dto.response.TossPaymentResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -41,7 +42,7 @@ public class TossWebClient {
                 .build();
 
         this.webClient = webClient
-                .baseUrl("https://api.tosspayments.com/v1/billing")
+                .baseUrl("https://api.tosspayments.com/v1")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .defaultHeader(HttpHeaders.AUTHORIZATION, endcodedKey)
                 .exchangeStrategies(exchangeStrategies)
@@ -56,24 +57,36 @@ public class TossWebClient {
     }
 
     // Make Billing Key
-    public Mono<BillingKeyResponse> makeBillingKey(String customerKey, String authKey) {
+    public Mono<TossBillingKeyResponse> makeBillingKey(String customerKey, String authKey) {
         return webClient.post()
-                .uri("/authorizations/issue")
-                .bodyValue(new BillingKeyRequest(customerKey, authKey))
+                .uri("/billing/authorizations/issue")
+                .bodyValue(new TossBillingKeyRequest(customerKey, authKey))
                 .retrieve()
-                .bodyToMono(BillingKeyResponse.class);
+                .bodyToMono(TossBillingKeyResponse.class);
     }
 
     // paySubscription
-    public Mono<PaymentResponse> paySubscription(String billingKey, AutoPayRequest autoPayRequest) {
+    public Mono<TossPaymentResponse> paySubscription(String billingKey, TossAutoPayRequest tossAutoPayRequest) {
         return webClient.post()
                 .uri(
                         uriBuilder -> uriBuilder
-                                .path("/{billingKey}")
+                                .path("/billing/{billingKey}")
                                 .build(billingKey)
                 )
-                .bodyValue(autoPayRequest)
+                .bodyValue(tossAutoPayRequest)
                 .retrieve()
-                .bodyToMono(PaymentResponse.class);
+                .bodyToMono(TossPaymentResponse.class);
+    }
+
+    //refundSubscription
+    public Mono<TossPaymentResponse> refundPayment(String paymentKey, TossRefundRequest request) {
+        return webClient.post()
+                .uri(
+                        uriBuilder -> uriBuilder.path("/payments/{paymentKey/cancel")
+                                .build(paymentKey)
+                )
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(TossPaymentResponse.class);
     }
 }

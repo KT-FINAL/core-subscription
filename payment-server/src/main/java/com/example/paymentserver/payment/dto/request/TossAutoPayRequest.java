@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillingKeyRequest {
+public class TossAutoPayRequest {
+    private Integer amount;
     private String customerKey;
-    private String authKey;
+    private String orderId;
+    private String orderName;
 }

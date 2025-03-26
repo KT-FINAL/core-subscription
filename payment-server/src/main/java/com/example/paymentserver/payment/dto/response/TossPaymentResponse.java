@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResponse {
+public class TossPaymentResponse {
     private String lastTransactionKey;
     private String paymentKey;
     private String orderId;

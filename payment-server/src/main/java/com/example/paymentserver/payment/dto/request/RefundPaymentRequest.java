@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutoPayRequest {
-    private Integer amount;
-    private String customerKey;
-    private String orderId;
-    private String orderName;
+public class RefundPaymentRequest {
+    private Long memberId;
 }

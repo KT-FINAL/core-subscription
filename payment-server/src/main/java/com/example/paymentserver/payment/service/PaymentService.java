@@ -3,10 +3,10 @@ package com.example.paymentserver.payment.service;
 import com.example.paymentserver.payment.client.TossWebClient;
 import com.example.paymentserver.payment.dto.request.SaveBillingRequest;
 import com.example.paymentserver.payment.dto.request.SavePaymentRequest;
-import com.example.paymentserver.payment.dto.response.BillingKeyResponse;
+import com.example.paymentserver.payment.dto.response.TossBillingKeyResponse;
 import com.example.paymentserver.payment.dto.response.BillingResponse;
 import com.example.paymentserver.payment.dto.response.PaymentEntityResponse;
-import com.example.paymentserver.payment.dto.response.PaymentResponse;
+import com.example.paymentserver.payment.dto.response.TossPaymentResponse;
 import com.example.paymentserver.payment.entity.Billing;
 import com.example.paymentserver.payment.entity.Payment;
 import com.example.paymentserver.payment.mapper.PaymentMapper;
@@ -40,13 +40,13 @@ public class PaymentService {
 
     @Transactional
     public BillingResponse saveBilling(SaveBillingRequest request) {
-        BillingKeyResponse billingKeyResponse
+        TossBillingKeyResponse tossBillingKeyResponse
                 = webClient.makeBillingKey(request.getCustomerKey(),request.getAuthKey()).block();
 
         Billing billing = billingRepository.save(
                 paymentMapper.
                         billingKeyResponseToBilling(
-                                request.getMemberId(), billingKeyResponse)
+                                request.getMemberId(), tossBillingKeyResponse)
         );
 
         return paymentMapper.billingToBillingResponse(billing);
@@ -65,13 +65,18 @@ public class PaymentService {
         Billing billing = getBillingByMemberId(request.getMemberId());
         String orderId = generateOrderId();
 
-        PaymentResponse paymentResponse = tossWebClient
+        TossPaymentResponse tossPaymentResponse = tossWebClient
                 .paySubscription(billing.getBillingKey(),paymentMapper.toAutoPayRequest(billing, orderId)).block();
 
         Payment payment = paymentRepository.save(
-                paymentMapper.toPaymentEntity(billing.getMemberId(), paymentResponse)
+                paymentMapper.toPaymentEntity(billing.getMemberId(), tossPaymentResponse)
         );
 
         return paymentMapper.toPaymentEntityResponse(payment);
+    }
+
+    @Transactional
+    public void refundPayment() {
+
     }
 }
