@@ -1,10 +1,12 @@
 package com.example.paymentserver.payment.controller;
 
+import com.example.paymentserver.payment.dto.request.RefundPaymentRequest;
 import com.example.paymentserver.payment.dto.request.SaveBillingRequest;
 import com.example.paymentserver.payment.dto.request.SavePaymentRequest;
 import com.example.paymentserver.payment.dto.response.BillingResponse;
 import com.example.paymentserver.payment.dto.response.PaymentEntityResponse;
 import com.example.paymentserver.payment.service.PaymentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +25,12 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<PaymentEntityResponse> savePayment(@RequestBody SavePaymentRequest request) {
+    public ResponseEntity<PaymentEntityResponse> savePayment(@RequestBody SavePaymentRequest request) throws JsonProcessingException {
         return ResponseEntity.ok(paymentService.savePayment(request));
     }
 
     @PostMapping("/refund")
-    public void refundPayment() {
-
+    public void refundPayment(@RequestBody RefundPaymentRequest request) {
+        paymentService.refundPayment(request);
     }
 }

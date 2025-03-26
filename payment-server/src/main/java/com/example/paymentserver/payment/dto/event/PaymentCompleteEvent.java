@@ -1,4 +1,4 @@
-package com.example.paymentserver.payment.dto.request;
+package com.example.paymentserver.payment.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefundPaymentRequest {
+public class PaymentCompleteEvent {
+    private Long paymentId;
     private Long memberId;
-    private String paymentKey;
 }

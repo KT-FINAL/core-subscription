@@ -1,8 +1,13 @@
 package com.example.paymentserver.payment.service;
 
+import com.example.paymentserver.global.kafka.KafkaDtoMapper;
+import com.example.paymentserver.global.kafka.PaymentKafkaProducer;
 import com.example.paymentserver.payment.client.TossWebClient;
+import com.example.paymentserver.payment.dto.event.PaymentCompleteEvent;
+import com.example.paymentserver.payment.dto.request.RefundPaymentRequest;
 import com.example.paymentserver.payment.dto.request.SaveBillingRequest;
 import com.example.paymentserver.payment.dto.request.SavePaymentRequest;
+import com.example.paymentserver.payment.dto.request.TossRefundRequest;
 import com.example.paymentserver.payment.dto.response.TossBillingKeyResponse;
 import com.example.paymentserver.payment.dto.response.BillingResponse;
 import com.example.paymentserver.payment.dto.response.PaymentEntityResponse;
@@ -12,6 +17,8 @@ import com.example.paymentserver.payment.entity.Payment;
 import com.example.paymentserver.payment.mapper.PaymentMapper;
 import com.example.paymentserver.payment.repository.BillingRepository;
 import com.example.paymentserver.payment.repository.PaymentRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +32,22 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final TossWebClient tossWebClient;
+    private final PaymentKafkaProducer paymentKafkaProducer;
+    private final KafkaDtoMapper kafkaDtoMapper;
 
     public PaymentService(
             TossWebClient webClient, BillingRepository billingRepository,
             PaymentRepository paymentRepository, PaymentMapper paymentMapper,
-            TossWebClient tossWebClient
+            TossWebClient tossWebClient, PaymentKafkaProducer paymentKafkaProducer,
+            KafkaDtoMapper kafkaDtoMapper
     ) {
         this.webClient = webClient;
         this.billingRepository = billingRepository;
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
         this.tossWebClient = tossWebClient;
+        this.paymentKafkaProducer = paymentKafkaProducer;
+        this.kafkaDtoMapper = kafkaDtoMapper;
     }
 
     @Transactional
@@ -70,19 +82,20 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentEntityResponse savePayment(SavePaymentRequest request) {
+    public PaymentEntityResponse savePayment(SavePaymentRequest request)  {
         Payment payment = paymentRepository.save(
                 paymentMapper.toPaymentEntity(request.getMemberId(), callTossPayment(request))
         );
 
-
-
+        paymentKafkaProducer.sendPaymentCompletedEvent("payment-completed",
+                kafkaDtoMapper.makePaymentCompleteEvent(new PaymentCompleteEvent(payment.getId(), payment.getMemberId()))
+                );
 
         return paymentMapper.toPaymentEntityResponse(payment);
     }
 
     @Transactional
-    public void refundPayment() {
-
+    public void refundPayment(RefundPaymentRequest request) {
+        tossWebClient.refundPayment(request.getPaymentKey(), new TossRefundRequest("[밀리의 서재 +] 환불"));
     }
 }
