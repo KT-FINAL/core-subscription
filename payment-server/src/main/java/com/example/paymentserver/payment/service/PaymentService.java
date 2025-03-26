@@ -61,16 +61,22 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentEntityResponse savePayment(SavePaymentRequest request) {
+    public TossPaymentResponse callTossPayment(SavePaymentRequest request) {
         Billing billing = getBillingByMemberId(request.getMemberId());
         String orderId = generateOrderId();
 
-        TossPaymentResponse tossPaymentResponse = tossWebClient
+        return tossWebClient
                 .paySubscription(billing.getBillingKey(),paymentMapper.toAutoPayRequest(billing, orderId)).block();
+    }
 
+    @Transactional
+    public PaymentEntityResponse savePayment(SavePaymentRequest request) {
         Payment payment = paymentRepository.save(
-                paymentMapper.toPaymentEntity(billing.getMemberId(), tossPaymentResponse)
+                paymentMapper.toPaymentEntity(request.getMemberId(), callTossPayment(request))
         );
+
+
+
 
         return paymentMapper.toPaymentEntityResponse(payment);
     }
