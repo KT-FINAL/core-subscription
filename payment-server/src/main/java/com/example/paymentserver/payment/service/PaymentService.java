@@ -20,9 +20,11 @@ import com.example.paymentserver.payment.repository.PaymentRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -110,5 +112,17 @@ public class PaymentService {
 
     private Payment getPaymentById(Long paymentId) {
         return paymentRepository.findById(paymentId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Scheduled(cron = "0 0 7 * * *")
+    @Transactional
+    public void paySubscription() {
+        List<Billing> billings = billingRepository.findAll();
+
+        billings.forEach(
+                billing -> savePayment(new SavePaymentRequest(
+                        billing.getMemberId()
+                ))
+        );
     }
 }
