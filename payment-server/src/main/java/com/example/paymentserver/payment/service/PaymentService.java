@@ -96,6 +96,16 @@ public class PaymentService {
         return paymentMapper.toPaymentEntityResponse(payment);
     }
 
+    public void saveAutoPayment(SavePaymentRequest request) {
+        Payment payment = paymentRepository.save(
+                paymentMapper.toPaymentEntity(request.getMemberId(), callTossPayment(request))
+        );
+
+        paymentKafkaProducer.sendPaymentCompletedEvent("payment-completed",
+                kafkaDtoMapper.makePaymentCompleteEvent(new PaymentCompleteEvent(payment.getId(), payment.getMemberId()))
+        );
+    }
+
     @Transactional
     public void refundPayment(RefundPaymentRequest request) {
         tossWebClient.refundPayment(request.getPaymentKey(), new TossRefundRequest("[밀리의 서재 +] 환불"));
@@ -120,7 +130,7 @@ public class PaymentService {
         List<Billing> billings = billingRepository.findAll();
 
         billings.forEach(
-                billing -> savePayment(new SavePaymentRequest(
+                billing -> saveAutoPayment(new SavePaymentRequest(
                         billing.getMemberId()
                 ))
         );
