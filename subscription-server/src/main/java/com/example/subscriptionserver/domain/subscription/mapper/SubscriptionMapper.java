@@ -16,7 +16,8 @@ public class SubscriptionMapper {
         return new Subscription(
                 event.getMemberId(),
                 SubscriptionType.BASIC,
-                LocalDate.now()
+                LocalDate.now(),
+                false
         );
     }
 
@@ -24,7 +25,8 @@ public class SubscriptionMapper {
         return new Subscription(
                 request.getMemberId(),
                 request.getSubscriptionType(),
-                request.getSubscriptionStartDate()
+                request.getSubscriptionStartDate(),
+                false
         );
     }
 

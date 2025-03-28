@@ -21,8 +21,6 @@ public class SubscriptionKafkaConsumer {
 
     @KafkaListener(topics = "payment-completed", groupId = "subscription-group")
     public void consumePaymentComleted(ConsumerRecord<String, String> record) throws JsonProcessingException {
-        System.out.println("I!!!!!!!!!!!!!!!!!!!!!!!");
-
         PaymentCompleteEvent event = objectMapper.readValue(record.value(), PaymentCompleteEvent.class);
 
         subscriptionService.registerSubscription(event);

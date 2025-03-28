@@ -10,9 +10,11 @@ import com.example.subscriptionserver.domain.subscription.repository.Subscriptio
 import com.example.subscriptionserver.global.kafka.KafkaDtoMapper;
 import com.example.subscriptionserver.global.kafka.SubscriptionKafkaProducer;
 import jakarta.persistence.EntityExistsException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -49,7 +51,7 @@ public class SubscriptionService {
         try {
             Subscription subscription = subscriptionRepository.save(subscriptionMapper.eventToSubscription(event));
         } catch (Exception e) {
-            subscriptionKafkaProducer.sendEvent("subscription-failed",kafkaDtoMapper.makeSubscriptionFailedEvent(
+            subscriptionKafkaProducer.sendEvent("subscription-failed", kafkaDtoMapper.makeSubscriptionFailedEvent(
                     new SubscriptionFailedEvent(
                             event.getPaymentId(),
                             event.getMemberId()
@@ -67,10 +69,18 @@ public class SubscriptionService {
     @Transactional
     public void unSubscribeSubscription(Long memberId) {
         Subscription subscription = getSubscriptionByMemberId(memberId, SubscriptionStatus.ACTIVE);
-        subscription.updateSubscriptionStatus(SubscriptionStatus.UNSUBSCRIBE);
+        subscription.updateUnSubscription();
     }
 
     private Subscription getSubscriptionByMemberId(Long memberId, SubscriptionStatus subscriptionStatus) {
         return subscriptionRepository.findStatusSubscriptionByMemberId(memberId, subscriptionStatus).orElseThrow(EntityExistsException::new);
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void expireSubscriptions() {
+        LocalDate today = LocalDate.now();
+        subscriptionRepository.findExpiringSubscriptions(today, SubscriptionStatus.ACTIVE).forEach(subscription -> subscription.updateSubscriptionStatus(SubscriptionStatus.EXPIRATION));
     }
 }
