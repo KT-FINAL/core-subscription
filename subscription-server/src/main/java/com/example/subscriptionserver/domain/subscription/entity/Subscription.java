@@ -34,7 +34,7 @@ public class Subscription {
             LocalDate startDate, Boolean willBeExpire) {
         this.memberId = memberId;
         this.subscriptionType = subscriptionType;
-        this.subscriptionStatus = SubscriptionStatus.PENDING;
+        this.subscriptionStatus = SubscriptionStatus.ACTIVE;
         this.startDate = startDate;
         this.endDate = startDate.plusMonths(1);
         this.willBeExpire = willBeExpire;
